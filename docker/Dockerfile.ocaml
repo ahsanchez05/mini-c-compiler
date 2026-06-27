@@ -1,0 +1,46 @@
+FROM ocaml/opam:ubuntu-24.04
+
+# System packages needed to build OCaml projects and native dependencies.
+RUN sudo apt-get update && sudo apt-get install -y --no-install-recommends \
+    build-essential \
+    git \
+    make \
+    gcc \
+    g++ \
+    m4 \
+    pkg-config \
+    libgmp-dev \
+    zlib1g-dev \
+    curl \
+    ca-certificates \
+    vim \
+    less \
+    gdb \
+    && sudo rm -rf /var/lib/apt/lists/*
+
+# OCaml toolchain and development tools.
+# ocamllex comes with the OCaml compiler; menhir provides the parser generator.
+RUN opam update && opam install -y \
+    dune \
+    menhir \
+    ocaml-lsp-server \
+    ocamlformat \
+    utop \
+    odoc \
+    ocamlfind \
+    ounit2 \
+    alcotest \
+    qcheck \
+    ppx_deriving \
+    ppx_deriving_yojson \
+    core \
+    base \
+    stdio \
+    containers
+
+# Make opam environment available in interactive shells.
+RUN echo 'eval $(opam env)' >> ~/.bashrc
+
+WORKDIR /workspace/mini-c-compiler
+
+CMD ["bash"]
