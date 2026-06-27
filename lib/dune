@@ -1,0 +1,9 @@
+(menhir
+ (modules parser))
+
+(ocamllex lexer)
+
+(library
+ (name mini_c_compiler)
+ (public_name mini_c_compiler)
+ (modules ast lexer parser ir asm_ir instr_selection spilling))
