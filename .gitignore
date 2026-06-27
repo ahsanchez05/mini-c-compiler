@@ -34,3 +34,6 @@ setup.log
 
 # Local OPAM switch
 _opam/
+
+# Editor directories and files
+.vscode/
