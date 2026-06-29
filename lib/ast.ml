@@ -14,7 +14,7 @@ type expr =
   | EVar of string
   | EInt of int
   | EChar of char
-  | EBinop of binop * expr * expr
+  | EBinOp of binop * expr * expr
   | ECall of string * expr list
 
 (** Types *)
@@ -112,7 +112,7 @@ let rec pp_stmt = function
   | SReturn (Some expr) -> sprintf "SReturn(%s)" (pp_expr expr)
 
 let pp_params params = 
-  (** Print a list of parameters as a space-separated touple list *)
+  (* Print a list of parameters as a space-separated touple list *)
   let extract_params (ty, name) = sprintf "(%s, %s)" (string_of_ty ty) ("\"" ^ name ^ "\"") in
   "{" ^ String.concat " " (List.map extract_params params) ^ "}"
 
