@@ -37,3 +37,9 @@ _opam/
 
 # Editor directories and files
 .vscode/
+
+.dune.lock
+.*opam.locked
+generated/*
+!generated/.gitkeep
+.DS_Store
