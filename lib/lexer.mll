@@ -84,5 +84,5 @@ rule token = parse
 and comment = parse
     | "*/" { () }
     | eof  { exit 1 }
-    | '\n' { Lexing.new_line; comment lexbuf }
+    | '\n' { Lexing.new_line lexbuf; comment lexbuf }
     | _    { comment lexbuf }
