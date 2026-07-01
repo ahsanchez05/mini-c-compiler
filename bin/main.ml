@@ -51,6 +51,31 @@ let () =
         (* Pretty print IR *)
         printf "%s\n" (Ir.pp_program ir)
 
+      (* Third option: --asm tag -> generate asm code given a C file
+      and pretty print it *)
+      | ("--asm", filename) | (filename, "--asm") ->
+        (* Get file name *)
+        let file = open_in filename in
+        (* Get lexer buffer *)
+        let lexbuf = Lexing.from_channel file in
+        (* Get AST *)
+        let ast =
+          try
+            (* Get sequence of tokens (Lexer.token lexbuf) and parse tokens
+            Generate AST *)
+            Parser.main Lexer.token lexbuf
+          with
+          | Parser.Error -> exit 1
+        in
+        (* Traduce AST to IR *)
+        let ir = Ir.ir_of_program ast in
+        (* Generate asm code (instruction selection) from IR *)
+        let instr_select = Instr_selection.instr_select_program ir in
+        (* Spilling: generate final asm code *)
+        let asm_final = Spilling.spill_program instr_select in
+        (* Pretty print asm code *)
+        printf "%s\n" (Asm_ir.pp_program asm_final)
+
       | _ -> exit 1
   )
   else exit 1
