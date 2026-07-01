@@ -85,7 +85,7 @@ let pp_ir_block = function
     sprintf "IRBlock({%s,\n\t%s\n\t%s})" key body (pp_ir_blockend return)
 
 let pp_ir_global = function
-  | IRFunc(name, (ty, param_list, block_list)) ->
+  | IRFunc(name, (ty, _param_list, block_list)) ->
     let blocks = String.concat "\n" (List.map pp_ir_block block_list) in
     sprintf "IRFunc(%s, %s, {},{\n\t%s})" (string_of_ty ty) name blocks
 
