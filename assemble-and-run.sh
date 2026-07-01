@@ -8,7 +8,7 @@ if [ "$#" -ne 1 ]; then
 fi
 
 CONTAINER_RUNTIME="${CONTAINER_RUNTIME:-docker}"
-IMAGE_MINI_SHELL="${IMAGE_MINI_SHELL:-mini-c-compiler-x86:latest}"
+IMAGE_X86_SHELL="${IMAGE_X86_SHELL:-mini-c-compiler-x86:latest}"
 
 file="$1"
 
@@ -17,24 +17,12 @@ if [ ! -f "$file" ]; then
     exit 1
 fi
 
-if [ "${ID2202_INSIDE_SHELL:-}" ]; then
-    if [ "$(uname -m)" != "x86_64" ]; then
-        echo "Error: This script must be run outside the dev-shell on non-x86 hardware."
-        exit 1
-    fi
-    tmpdir="$(mktemp -d)"
-    nasm -felf64 -o "$tmpdir/obj.o" "$file"
-    gcc -z noexecstack -no-pie -o "$tmpdir/a.out" "$tmpdir/obj.o"
-    "$tmpdir/a.out"
-    rm -rf "$tmpdir"
-else
-    srcdir="$(cd "$(dirname "$file")" && pwd -P)"
-    srcfile="$(basename "$file")"
-    "$CONTAINER_RUNTIME" run --rm -it \
-        --platform linux/amd64 \
-        -v "$srcdir:/id2202:ro" \
-        "$IMAGE_MINI_SHELL" \
-        bash -c "nasm -felf64 -o /root/obj.o /id2202/'$srcfile' \
-              && gcc -z noexecstack -no-pie -o /root/a.out /root/obj.o \
-              && /root/a.out"
-fi
+srcdir="$(cd "$(dirname "$file")" && pwd -P)"
+srcfile="$(basename "$file")"
+"$CONTAINER_RUNTIME" run --rm -it \
+    --platform linux/amd64 \
+    -v "$srcdir:/workspace:ro" \
+    "$IMAGE_X86_SHELL" \
+    bash -c "nasm -felf64 -o /tmp/obj.o /workspace/'$srcfile' \
+          && gcc -z noexecstack -no-pie -o /tmp/a.out /tmp/obj.o \
+          && /tmp/a.out"
