@@ -32,6 +32,25 @@ let () =
         (* Pretty print AST *)
         printf "%s\n" (Ast.pp_program ast)
 
+      (* Second option: --ir tag -> pretty print the IR () *)
+      | ("--ir", filename) | (filename, "--ir") ->
+        (* Get file name *)
+        let file = open_in filename in
+        (* Get lexer buffer *)
+        let lexbuf = Lexing.from_channel file in
+        let ast =
+          try
+            (* Get sequence of tokens (Lexer.token lexbuf) and parse tokens
+            Generate AST *)
+            Parser.main Lexer.token lexbuf
+          with
+          | Parser.Error -> exit 1
+        in
+        (* Traduce AST to IR *)
+        let ir = Ir.ir_of_program ast in
+        (* Pretty print IR *)
+        printf "%s\n" (Ir.pp_program ir)
+
       | _ -> exit 1
   )
   else exit 1
