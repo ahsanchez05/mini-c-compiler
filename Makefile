@@ -34,7 +34,7 @@ dev-shell:
 		$(IMAGE_DEV_SHELL) bash
 
 # x86_64 shell for assembling/running generated x86 assembly
-mini-shell:
+x86-shell:
 	$(CONTAINER_RUNTIME) run --rm -it \
 		--name x86-shell \
 		--hostname x86-shell \
@@ -52,7 +52,7 @@ help:
 	@echo "  make build-ocaml-image"
 	@echo "  make build-x86-image"
 	@echo "  make dev-shell"
-	@echo "  make mini-shell"
+	@echo "  make x86-shell"
 	@echo "  make clean"
 	@echo "  make clean-images"
 	@echo ""
